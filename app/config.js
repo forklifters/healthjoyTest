@@ -2,7 +2,7 @@
 require.config({
     paths: {
         angular: './public/libs/angular/angular.min',
-        localStorageService: "./public/libs/angular-local-storage/dist/angular-local-storage.min",
+        localStorageService: "./public/libs/angular-local-storage/dist/angular-local-storage",
         main: './main',
     },
     shim: {

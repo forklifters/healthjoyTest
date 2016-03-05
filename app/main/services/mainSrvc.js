@@ -1,6 +1,6 @@
-define([], function () {
-  'use strict';
-  function mainSrvc ($http, $q) {
+define(['./module'], function (services) {
+    'use strict';
+    services.service('mainSrvc', function ($http, $q) {
     	var list =  function (){
 	      return $q(function(resolve, reject) {
 	        $http({
@@ -8,11 +8,8 @@ define([], function () {
 	          url: '../data.json'
 	        }).success(function (data) {
 	          resolve(data);
-	          console.log(data);
 	        }).error(function (data, status, headers, config) {
-	          if(reject){
-	            reject(data);
-	          }
+            reject(data);
 	        });
 	      });
 	    };
@@ -21,9 +18,5 @@ define([], function () {
           return list();
         }
 	    };
-  };
-
-	mainSrvc.$inject=['$http','$q'];
-
-	return mainSrvc;
+    });
 });
