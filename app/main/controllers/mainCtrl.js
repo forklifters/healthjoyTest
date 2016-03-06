@@ -1,11 +1,12 @@
 define(['./module'], function (controllers) {
     'use strict';
-    controllers.controller('mainCtrl', function ($scope, mainSrvc) {
+    controllers.controller('mainCtrl', function ($scope, mainSrvc, filterFilter) {
     	mainSrvc.list().then(function (data) {
 				$scope.dataList = data;
 				$scope.selectedCompany = $scope.dataList[0];
 				$scope.selectedAge = $scope.dataList[0];
 			});
+			$scope.search = {};
 			$scope.currentPage = 1;
 			$scope.maxSize = 5;
 			$scope.items = [
@@ -29,7 +30,6 @@ define(['./module'], function (controllers) {
 				},
 			];
 			$scope.selected = $scope.items[0];
-
 			$scope.search = function (row) {
 	      return !!(
 		      (row.phone.indexOf($scope.query || '') !== -1 
@@ -37,6 +37,14 @@ define(['./module'], function (controllers) {
 		      || row.name.first.indexOf($scope.query || '') !== -1
 		      || row.name.last.indexOf($scope.query || '') !== -1)
 		    );
-	    };
-    });
+	    };			
+    }).filter('startFrom', function () {
+			return function (input, start) {
+				if (input) {
+					start = +start;
+					return input.slice(start);
+				}
+				return [];
+			};
+		});
 });
