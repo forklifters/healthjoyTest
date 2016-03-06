@@ -4,62 +4,86 @@
 <!--[if IE 8]>         <html lang="en" class="lt-ie9"> <![endif]-->
 <!--[if gt IE 8]><!--> <html lang="en" class="no-js" > <!--<![endif]-->
 <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title ng-bind="pageTitle"></title>
-    <base href="/">
-    <meta name="description" content="">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="/public/css/screen.css" media="screen"/>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<title ng-bind="pageTitle"></title>
+		<base href="/">
+		<meta name="description" content="">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel="stylesheet" href="/public/css/screen.css" media="screen"/>
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css">
 </head>
 <body ng-controller="mainCtrl">
-    <div class="viewport col-xs-12">
-    	<table class="table table-bordered table-striped">
-    		<thead>
-    			<tr>
-    				<th>Status</th>
-    				<th>Photo Full Name</th>
-    				<th>Age</th>
-    				<th>Company Name</th>
-    				<th>Contacts</th>
-    				<th>Address</th>
-    			</tr>
-    		</thead>
-    		<tbody>
-    			<tr ng-repeat="client in dataList">
-    				<td>
-    					<span ng-show="client.isActive">Active</span>
-    					<span ng-show="!client.isActive">Disabled</span>
-    				</td>
-    				<td>
-    					<img ng-src="{{client.picture}}" alt="" width="32px" height="32px" class="img-circle">
+	<div class="col-xs-12">
+		<h2>Filters</h2>
+	</div>
+	<div class="col-xs-3">
+		<select ng-options="item as item.label for item in items track by item.id" ng-model="selected"></select>
+	</div>
+	<div class="col-xs-3"><!-- 
+		<select ng-options="item as item.label for address in dataList track by item._id" ng-model=""></select> -->
+	</div>
+	<div class="col-xs-3"><!-- 
+		<select ng-options="company as company.company for company in dataList track by item._id" ng-model="selectedCompany"></select> -->
+	</div>
+	<div class="col-xs-3"><!-- 
+		<select ng-options="age as age.age for age in dataList track by item._id" ng-model="selectedAge"></select> -->
+	</div>
 
-    					<span>{{client.name.first}} {{client.name.last}}</span>
-    				</td>
-    				<td>
-    					{{client.age}}
-    				</td>
-    				<td>
-    					{{client.company}}
-    				</td>
-    				<td>
-    					<span>Email: {{client.email}}</span>
-							<br>
-    					<span>Phone: {{client.phone}}</span>
-    				</td>
-    				<td>
-    					<span>{{client.address.street}}</span><br>
-    					<span>{{client.address.city}}</span>, <span>{{client.address.state}}</span> <span>{{client.address.zip}}</span>
-    				</td>
-    			</tr>
-    		</tbody>
-    	</table>
-    </div>
+	<div class="col-xs-12 form-group">
+		<span>Search: </span><input type="text" ng-model="query" placeholder="Search by name, phone, email..." class="form-controll">
+	</div>
+
+	<div class="viewport col-xs-12">
+		<table class="table table-bordered table-striped">
+			<thead>
+				<tr>
+					<th>Status</th>
+					<th>Full Name</th>
+					<th>Age</th>
+					<th>Company Name</th>
+					<th>Contacts</th>
+					<th>Address</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr ng-repeat="client in dataList | limitTo:selected.value:(currentPage - 1) * selected.value | filter:search">
+					<td>
+						<span ng-show="client.isActive">Active</span>
+						<span ng-show="!client.isActive">Disabled</span>
+					</td>
+					<td>
+						<img ng-src="{{client.picture}}" alt="" width="32px" height="32px" class="img-circle">
+						<span>{{client.name.first}} {{client.name.last}}</span>
+					</td>
+					<td>{{client.age}}</td>
+					<td>{{client.company}}</td>
+					<td>
+						<span>Email: {{client.email}}</span>
+						<br>
+						<span>Phone: {{client.phone}}</span>
+					</td>
+					<td>
+						<span>{{client.address.street}}</span><br>
+						<span>{{client.address.city}}</span>, <span>{{client.address.state}}</span> <span>{{client.address.zip}}</span>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+
+		<uib-pagination 
+				total-items="dataList.length" 
+				items-per-page="selected.value"
+				ng-model="currentPage"
+				boundary-link-numbers="true"
+				class="pagination-sm"
+				max-size="maxSize">
+		</uib-pagination>
+	</div>
 		
 	<script src="https://code.jquery.com/jquery-2.2.1.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
-    <script data-main="config.js" src="/public/libs/requirejs/require.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+	<script data-main="config.js" src="/public/libs/requirejs/require.js"></script>
 </body>
 </html>
