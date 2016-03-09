@@ -14,73 +14,75 @@
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css">
 </head>
-<body ng-controller="mainCtrl">
-	<div class="col-xs-12">
-		<h2>Filters</h2>
-	</div>
-	<div class="col-xs-3 form-group">
-		<select class="form-control" ng-options="item as item.label for item in items track by item.id" ng-model="selected"></select>
-	</div>
-	<div class="col-xs-3"><!-- 
-		<select ng-options="item as item.label for address in dataList track by item._id" ng-model=""></select> -->
-	</div>
-	<div class="col-xs-3"><!-- 
-		<select ng-options="company as company.company for company in dataList track by item._id" ng-model="selectedCompany"></select> -->
-	</div>
-	<div class="col-xs-3"><!-- 
-		<select ng-options="age as age.age for age in dataList track by item._id" ng-model="selectedAge"></select> -->
+<body>
+	<div ng-controller="mainCtrl" class="viewport">		
+		<div class="col-xs-12">
+			<h3>Filters</h3>
+		</div>
+
+		<div class="col-xs-3 form-group">
+			<select class="form-control" ng-options="item as item.label for item in items track by item.id" ng-model="selected"></select>
+		</div>
+		<div class="col-xs-3"><!-- 
+			<select ng-options="item as item.label for address in dataList track by item._id" ng-model=""></select> -->
+		</div>
+
+		<div class="col-xs-3">
+			<select class="form-control" ng-model="selectedCompany" ng-options="comp as comp.company for comp in companies" ng-change="selectFilter(selectedCompany, 'company');">
+				<option value="">Select Company</option>
+			</select>
+		</div>
+
+		<div class="col-xs-3">
+			<select class="form-control" ng-model="selectedAge" ng-options="opt as opt.age for opt in ages" ng-change="selectFilter(selectedAge, 'age');">
+				<option value="">Select Age</option>
+			</select>
+		</div>
+
+		<div class="col-xs-12 form-group">
+			<h3>Search: </h3>
+			<input type="text" class="form-control" ng-model="query" placeholder="Search by name, phone, email...">
+		</div>
+
+		<div class="col-xs-12 tablePort">
+			<table class="table table-bordered table-striped" infinite-scroll="increaseLimit()" >
+				<thead>
+					<tr>
+						<th>Status</th>
+						<th>Full Name</th>
+						<th>Age</th>
+						<th>Company Name</th>
+						<th>Contacts</th>
+						<th>Address</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr ng-repeat="client in dataList | filter:search | limitTo:limitition">
+						<td>
+							<span ng-show="client.isActive">Active</span>
+							<span ng-show="!client.isActive">Disabled</span>
+						</td>
+						<td>
+							<img ng-src="{{client.picture}}" alt="" width="32px" height="32px" class="img-circle">
+							<span>{{client.name.first}} {{client.name.last}}</span>
+						</td>
+						<td>{{client.age}}</td>
+						<td>{{client.company}}</td>
+						<td>
+							<span>Email: {{client.email}}</span>
+							<br>
+							<span>Phone: {{client.phone}}</span>
+						</td>
+						<td>
+							<span>{{client.address.street}}</span><br>
+							<span>{{client.address.city}}</span>, <span>{{client.address.state}}</span> <span>{{client.address.zip}}</span>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
 	</div>
 
-	<div class="col-xs-12 form-group">
-		<span>Search: </span><input type="text" ng-model="query" placeholder="Search by name, phone, email..." class="form-control">
-	</div>
-
-	<div class="viewport col-xs-12">
-		<table class="table table-bordered table-striped">
-			<thead>
-				<tr>
-					<th>Status</th>
-					<th>Full Name</th>
-					<th>Age</th>
-					<th>Company Name</th>
-					<th>Contacts</th>
-					<th>Address</th>
-				</tr>
-			</thead>
-			<tbody>
-				<tr ng-repeat="client in filtered = dataList | filter:search | startFrom:(currentPage-1)*selected.value | limitTo:selected.value">
-					<td>
-						<span ng-show="client.isActive">Active</span>
-						<span ng-show="!client.isActive">Disabled</span>
-					</td>
-					<td>
-						<img ng-src="{{client.picture}}" alt="" width="32px" height="32px" class="img-circle">
-						<span>{{client.name.first}} {{client.name.last}}</span>
-					</td>
-					<td>{{client.age}}</td>
-					<td>{{client.company}}</td>
-					<td>
-						<span>Email: {{client.email}}</span>
-						<br>
-						<span>Phone: {{client.phone}}</span>
-					</td>
-					<td>
-						<span>{{client.address.street}}</span><br>
-						<span>{{client.address.city}}</span>, <span>{{client.address.state}}</span> <span>{{client.address.zip}}</span>
-					</td>
-				</tr>
-			</tbody>
-		</table>
-
-		<uib-pagination 
-				total-items="(dataList | filter:search).length" 
-				items-per-page="selected.value"
-				ng-model="currentPage"
-				boundary-link-numbers="true"
-				class="pagination-sm"
-				max-size="maxSize">
-		</uib-pagination>
-	</div>
 		
 	<script src="https://code.jquery.com/jquery-2.2.1.min.js"></script>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
