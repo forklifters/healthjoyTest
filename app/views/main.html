@@ -1,0 +1,71 @@
+<div ng-controller="mainCtrl" class="viewport">		
+		<div class="col-xs-12">
+			<h3>Filters</h3>
+		</div>
+
+		<div class="col-xs-3 form-group">
+			<select class="form-control" ng-options="item as item.label for item in items track by item.id" ng-model="selected"></select>
+		</div>
+		
+		<div class="col-xs-3">
+			<input type="text" class="form-control" ng-model="addressFilterModel" placeholder="Filter by adress...">
+		</div>
+
+		<div class="col-xs-3">
+			<select class="form-control" ng-model="selectedCompany" ng-options="comp as comp.company for comp in companies" ng-change="selectFilter(selectedCompany, 'company');">
+				<option value="">Select Company</option>
+			</select>
+		</div>
+
+		<div class="col-xs-3">
+			<select class="form-control" ng-model="selectedAge" ng-options="opt as opt.age for opt in ages" ng-change="selectFilter(selectedAge, 'age');">
+				<option value="">Select Age</option>
+			</select>
+		</div>
+
+		<div class="col-xs-12 form-group">
+			<h3>Search: </h3>
+			<input type="text" class="form-control" ng-model="query" placeholder="Search by name, phone, email...">
+		</div>
+
+		<div class="col-xs-12 tablePort">
+			<table class="table table-bordered table-striped" infinite-scroll="increaseLimit()" >
+				<thead>
+					<tr>
+						<th>Status</th>
+						<th>Full Name</th>
+						<th>Age</th>
+						<th>Company Name</th>
+						<th>Contacts</th>
+						<th>Address</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr 
+						ng-repeat="client in dataList | 
+							filter:search | filter:addressSearch |
+							limitTo:limitition">
+						<td>
+							<span ng-show="client.isActive">Active</span>
+							<span ng-show="!client.isActive">Disabled</span>
+						</td>
+						<td>
+							<img ng-src="{{client.picture}}" alt="" width="32px" height="32px" class="img-circle">
+							<span>{{client.name.first}} {{client.name.last}}</span>
+						</td>
+						<td>{{client.age}}</td>
+						<td>{{client.company}}</td>
+						<td>
+							<span>Email: {{client.email}}</span>
+							<br>
+							<span>Phone: {{client.phone}}</span>
+						</td>
+						<td>
+							<span>{{client.address.street}}</span><br>
+							<span>{{client.address.city}}</span>, <span>{{client.address.state}}</span> <span>{{client.address.zip}}</span>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
