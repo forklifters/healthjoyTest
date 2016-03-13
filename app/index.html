@@ -23,8 +23,9 @@
 		<div class="col-xs-3 form-group">
 			<select class="form-control" ng-options="item as item.label for item in items track by item.id" ng-model="selected"></select>
 		</div>
-		<div class="col-xs-3"><!-- 
-			<select ng-options="item as item.label for address in dataList track by item._id" ng-model=""></select> -->
+		
+		<div class="col-xs-3">
+			<input type="text" class="form-control" ng-model="addressFilterModel" placeholder="Filter by adress...">
 		</div>
 
 		<div class="col-xs-3">
@@ -57,7 +58,10 @@
 					</tr>
 				</thead>
 				<tbody>
-					<tr ng-repeat="client in dataList | filter:search | limitTo:limitition">
+					<tr 
+						ng-repeat="client in dataList | 
+							filter:search | filter:addressSearch |
+							limitTo:limitition">
 						<td>
 							<span ng-show="client.isActive">Active</span>
 							<span ng-show="!client.isActive">Disabled</span>

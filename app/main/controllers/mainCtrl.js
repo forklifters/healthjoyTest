@@ -1,7 +1,7 @@
 define(['./module'], function (controllers) {
     'use strict';
     controllers.controller('mainCtrl', function ($scope, mainSrvc, filterFilter) {
-    	$scope.selectedAge;
+    	// $scope.selectedAge;
 			$scope.items = [
 				{id: 1, label: 'Show 10 clients per page', value: 10}, 
 				{id: 2, label: 'Show 25 clients per page', value: 25},
@@ -10,37 +10,33 @@ define(['./module'], function (controllers) {
 			];
 
 			$scope.selected = $scope.items[0];
-			$scope.limitition = angular.copy($scope.selected.value);
+			$scope.itemsPerPage = angular.copy($scope.selected.value);
 	    
+	    //main 
     	mainSrvc.list().then(function (data) {
-				$scope.dataList = data;
-				$scope.originalDataList = data;
+				$scope.originalDataList = $scope.dataList = data;
 				$scope.setFilters(data);
 			});
 
+			$scope.setFilters = function(data){
+				$scope.companies = $scope.unique(data, 'company');
+	  		$scope.ages = $scope.unique(data, 'age');
+			}
+
 			$scope.unique = function (list,param) {
 		  	var lst = [];
-		  	var id = 0
 		  	list.forEach(function(key){
 		  		var obj = {};
-		  		obj['id'] = id;
 		  		obj[param] = key[param];
 		  		lst.push(obj);
-		  		id++;
 		  	});
-		    lst.sort(function(a,b){
-				  return a[param] > b[param] ? 1 : -1;
-				});
+		    lst.sort(function(a,b){return a[param] > b[param] ? 1 : -1;});
 		    for(var i=0; i<lst.length-1; i++)
 		      if (lst[i][param] == lst[i+1][param]) delete lst[i];
 		    return lst.filter(function(el){return (typeof el !== "undefined")});
 		  }
-
-		  $scope.setFilters = function (data) {
-	  		$scope.companies = $scope.unique(data, 'company');
-	  		$scope.ages = $scope.unique(data, 'age');
-		  }
-
+		  
+		  //search and filters
 		  $scope.selectFilter = function(opt, paramKey){
 		  	$scope.dataList = angular.copy($scope.originalDataList);
 		  	if(opt == null) {
@@ -64,10 +60,20 @@ define(['./module'], function (controllers) {
 		    );
 	    };	
 
+	    $scope.addressSearch = function(sea){
+	    	return !!(
+	    		!$scope.addressFilterModel ||
+	    		sea.address.state.indexOf($scope.addressFilterModel) > -1 ||
+	    		sea.address.city.indexOf($scope.addressFilterModel) > -1 ||
+	    		sea.address.street.indexOf($scope.addressFilterModel) > -1 ||
+	    		sea.address.zip.toString().indexOf($scope.addressFilterModel) > -1
+    		);
+	    }
+
+	    //infinite scroll
 	    $scope.increaseLimit = function () {
-	    	if($scope.limitition >= $scope.originalDataList.length) return;
-        $scope.limitition += $scope.selected.value;
-        console.log('Increase Bar Limit', $scope.limitition)
+	    	if($scope.itemsPerPage >= $scope.originalDataList.length) return;
+        $scope.itemsPerPage += $scope.selected.value;
 	    };
     });
 });
